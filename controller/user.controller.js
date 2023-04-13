@@ -25,16 +25,55 @@ const loginUserControl = asyncHandler(async (req, res) => {
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.isPasswordMatched(password))) {
     return res.send({
-        _id: findUser?._id,
-        firstname: findUser?.firstname,
-        lastname: findUser?.lastname,
-        email: findUser?.email,
-        mobile: findUser?.mobile,
-        token: generateToken(findUser?._id)
+      _id: findUser?._id,
+      firstname: findUser?.firstname,
+      lastname: findUser?.lastname,
+      email: findUser?.email,
+      mobile: findUser?.mobile,
+      token: generateToken(findUser?._id),
     });
   } else {
     throw new Error("Invalid Credentials");
   }
 });
 
-module.exports = { createUser, loginUserControl };
+// Get All Users
+const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const getUsers = await User.find();
+    return res.status(200).send(getUsers);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+// get a single user
+const getAUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  // console.log(id);
+  try {
+    const getAUser = await User.findById(id);
+    return res.status(200).send(getAUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+//delete a user
+const deleteAUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleteAUser = await User.findByIdAndDelete(id);
+    return res.status(200).send(deleteAUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+module.exports = {
+  createUser,
+  loginUserControl,
+  getAllUsers,
+  getAUser,
+  deleteAUser,
+};
