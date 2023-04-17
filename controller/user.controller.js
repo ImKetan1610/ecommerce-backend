@@ -70,10 +70,22 @@ const deleteAUser = asyncHandler(async (req, res) => {
   }
 });
 
+// update the user
+const updateAUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updateAUser = await User.findByIdAndUpdate(id);
+    return res.status(200).send(updateAUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
   loginUserControl,
   getAllUsers,
   getAUser,
   deleteAUser,
+  updateAUser,
 };
