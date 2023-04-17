@@ -1,6 +1,7 @@
 const { generateToken } = require("../config/jwtToken");
 const User = require("../models/user.model");
 const asyncHandler = require("express-async-handler");
+const { validateMongodbId } = require("../utils/validateMongodbId");
 
 const createUser = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -50,6 +51,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // get a single user
 const getAUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbId(id);
   // console.log(id);
   try {
     const getAUser = await User.findById(id);
@@ -63,7 +65,7 @@ const getAUser = asyncHandler(async (req, res) => {
 const updateAUser = asyncHandler(async (req, res) => {
   // const { id } = req.params; // we can get the id from user with the help of authMiddleware.js
   const { _id } = req.user;
-
+  validateMongodbId(_id);
   try {
     const updatedUser = await User.findByIdAndUpdate(
       _id,
@@ -84,6 +86,7 @@ const updateAUser = asyncHandler(async (req, res) => {
 //delete a user
 const deleteAUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbId(id);
   try {
     const deleteAUser = await User.findByIdAndDelete(id);
     return res.status(200).send(deleteAUser);
@@ -94,6 +97,7 @@ const deleteAUser = asyncHandler(async (req, res) => {
 
 const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbId(id);
   try {
     const block = await User.findByIdAndUpdate(
       id,
@@ -103,15 +107,16 @@ const blockUser = asyncHandler(async (req, res) => {
       {
         new: true,
       }
-    );
+      );
+      return res.status(200).send(block);
   } catch (error) {
     throw new Error(error);
   }
-  return res.status(200).send({ message: "User Blocked" });
 });
 
 const unBlockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  validateMongodbId(id);
   try {
     const unblock = await User.findByIdAndUpdate(
       id,
@@ -122,10 +127,10 @@ const unBlockUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
+    return res.status(200).send(unblock);
   } catch (error) {
     throw new Error(error);
   }
-  return res.status(200).send({ message: "User UnBlocked" });
 });
 
 module.exports = {
