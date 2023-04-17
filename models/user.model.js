@@ -26,10 +26,16 @@ var userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role:{
-        type:String,
-        default:"user"
-    }
+    role: {
+      type: String,
+      default: "user",
+    },
+    cart: {
+      type: Array,
+      default: [],
+    },
+    address: [{ type: Schema.Types.ObjectId, ref: "Address" }],
+    wishlist: [{ type: Schema.Types.ObjectId, ref: "Product" }],
   },
   {
     timestamps: true,
