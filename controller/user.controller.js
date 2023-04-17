@@ -59,23 +59,32 @@ const getAUser = asyncHandler(async (req, res) => {
   }
 });
 
+// update the user
+const updateAUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        firstname: req?.body?.firstname,
+        lastname: req?.body?.lastname,
+        email: req?.body?.email,
+        mobile: req?.body?.mobile,
+      },
+      { new: true }
+    );
+    return res.status(200).send(updatedUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 //delete a user
 const deleteAUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const deleteAUser = await User.findByIdAndDelete(id);
     return res.status(200).send(deleteAUser);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-// update the user
-const updateAUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  try {
-    const updateAUser = await User.findByIdAndUpdate(id);
-    return res.status(200).send(updateAUser);
   } catch (error) {
     throw new Error(error);
   }
