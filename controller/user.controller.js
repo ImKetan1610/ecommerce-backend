@@ -49,9 +49,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // get a single user
 const getAUser = asyncHandler(async (req, res) => {
-  // const { id } = req.params;   // we can get the id from user with the help of authMiddleware.js
+  const { id } = req.params;
   // console.log(id);
-  const { _id } = req.user;
   try {
     const getAUser = await User.findById(id);
     return res.status(200).send(getAUser);
@@ -62,7 +61,7 @@ const getAUser = asyncHandler(async (req, res) => {
 
 // update the user
 const updateAUser = asyncHandler(async (req, res) => {
-  // const { id } = req.params;
+  // const { id } = req.params; // we can get the id from user with the help of authMiddleware.js
   const { _id } = req.user;
 
   try {
@@ -93,6 +92,42 @@ const deleteAUser = asyncHandler(async (req, res) => {
   }
 });
 
+const blockUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const block = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: true,
+      },
+      {
+        new: true,
+      }
+    );
+  } catch (error) {
+    throw new Error(error);
+  }
+  return res.status(200).send({ message: "User Blocked" });
+});
+
+const unBlockUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const unblock = await User.findByIdAndUpdate(
+      id,
+      {
+        isBlocked: false,
+      },
+      {
+        new: true,
+      }
+    );
+  } catch (error) {
+    throw new Error(error);
+  }
+  return res.status(200).send({ message: "User UnBlocked" });
+});
+
 module.exports = {
   createUser,
   loginUserControl,
@@ -100,4 +135,6 @@ module.exports = {
   getAUser,
   deleteAUser,
   updateAUser,
+  blockUser,
+  unBlockUser,
 };

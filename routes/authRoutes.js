@@ -6,6 +6,8 @@ const {
   getAUser,
   deleteAUser,
   updateAUser,
+  blockUser,
+  unBlockUser,
 } = require("../controller/user.controller");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const router = express.Router();
@@ -18,5 +20,7 @@ router.delete("/:id", deleteAUser);
 //after adding authmiddleware
 // router.put("/:id", updateAUser);
 router.put("/edit-user", authMiddleware, updateAUser);
+router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);
+router.put("/unblock-user/:id", authMiddleware, isAdmin, unBlockUser);
 
 module.exports = router;
