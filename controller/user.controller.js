@@ -49,8 +49,9 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 // get a single user
 const getAUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;   // we can get the id from user with the help of authMiddleware.js
   // console.log(id);
+  const { _id } = req.user;
   try {
     const getAUser = await User.findById(id);
     return res.status(200).send(getAUser);
@@ -61,10 +62,12 @@ const getAUser = asyncHandler(async (req, res) => {
 
 // update the user
 const updateAUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
+  const { _id } = req.user;
+
   try {
     const updatedUser = await User.findByIdAndUpdate(
-      id,
+      _id,
       {
         firstname: req?.body?.firstname,
         lastname: req?.body?.lastname,
