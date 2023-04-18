@@ -2,6 +2,7 @@ const { generateToken } = require("../config/jwtToken");
 const User = require("../models/user.model");
 const asyncHandler = require("express-async-handler");
 const { validateMongodbId } = require("../utils/validateMongodbId");
+const { generateRefreshToken } = require("../config/refreshtoken");
 
 const createUser = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -25,6 +26,18 @@ const loginUserControl = asyncHandler(async (req, res) => {
   //check if user exist or not
   const findUser = await User.findOne({ email });
   if (findUser && (await findUser.isPasswordMatched(password))) {
+    const refreshToken = await generateRefreshToken(findUser?._id);
+    const updateUser = await User.findByIdAndUpdate(
+      findUser._id,
+      {
+        refreshToken,
+      },
+      { new: true }
+    );
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+    });
     return res.send({
       _id: findUser?._id,
       firstname: findUser?.firstname,
@@ -107,8 +120,8 @@ const blockUser = asyncHandler(async (req, res) => {
       {
         new: true,
       }
-      );
-      return res.status(200).send(block);
+    );
+    return res.status(200).send(block);
   } catch (error) {
     throw new Error(error);
   }
