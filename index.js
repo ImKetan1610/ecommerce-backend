@@ -1,6 +1,7 @@
 const express = require("express");
 const dbConnect = require("./config/db");
 const authRouter = require("./routes/authRoutes");
+const productRouter = require("./routes/productRoutes");
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
 const app = express();
@@ -14,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser())
 
 app.use("/api/user", authRouter);
+app.use("/api/product", productRouter)
 
 app.use(notFound)
 app.use(errorHandler)
