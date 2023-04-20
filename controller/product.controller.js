@@ -49,4 +49,20 @@ const getAllProducts = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createProduct, getAProduct, getAllProducts, updateAProduct };
+const deleteAProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deleteProduct = await Product.findByIdAndDelete(id);
+    return res.status(200).send(deleteProduct);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
+module.exports = {
+  createProduct,
+  getAProduct,
+  getAllProducts,
+  updateAProduct,
+  deleteAProduct,
+};

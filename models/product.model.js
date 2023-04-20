@@ -37,6 +37,7 @@ var productSchema = new mongoose.Schema(
     sold: {
       type: Number,
       default: 0,
+      select: false, // after adding this to the schema, user is not able to see this field but admin can
     },
     images: {
       type: Array,
